@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Abhinav Mishra — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #060912;
+    --bg-soft: #0b1120;
+    --panel: #10182c;
+    --panel-border: #1e2a45;
+    --text: #e7ecf7;
+    --muted: #8b96b3;
+    --accent-a: #4f8dff;
+    --accent-b: #8b6bff;
+    --accent-c: #34d8c8;
+    --radius: 14px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Sora', sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;text-decoration:none;}
+  section{position:relative; padding:120px 8vw 90px; overflow:hidden;}
+  .section-inner{max-width:1100px; margin:0 auto; position:relative; z-index:2;}
+  .eyebrow{color:var(--muted); font-size:0.95rem; margin-bottom:6px;}
+  .section-title{font-size:2.6rem; font-weight:700; margin-bottom:8px;}
+  .section-sub{color:var(--muted); font-size:1.05rem; margin-bottom:56px; max-width:560px;}
+
+  canvas.net-bg{
+    position:absolute; inset:0; width:100%; height:100%;
+    z-index:0; opacity:0.55; pointer-events:none;
+  }
+
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 8vw;
+    background:rgba(6,9,18,0.72);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,0.05);
+  }
+  .logo{
+    font-family:'Sora', sans-serif;
+    font-weight:800;
+    font-size:1.3rem;
+    background:linear-gradient(120deg, var(--accent-a), var(--accent-b));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  nav ul{list-style:none; display:flex; gap:34px; margin:0; padding:0;}
+  nav a{
+    font-size:0.95rem; color:var(--muted); font-weight:500;
+    transition:color .2s ease;
+    position:relative;
+  }
+  nav a:hover, nav a.active{color:var(--text);}
+  nav a.active::after{
+    content:''; position:absolute; left:0; right:0; bottom:-8px; height:2px;
+    background:linear-gradient(90deg, var(--accent-a), var(--accent-b));
+  }
+  .nav-right{display:flex; align-items:center; gap:18px;}
+  .connect-btn{
+    font-size:0.9rem; font-weight:600; border-bottom:1px solid var(--text); padding-bottom:2px;
+  }
+  @media(max-width:840px){ nav ul{display:none;} }
+
+  #home{min-height:100vh; display:flex; align-items:center; padding-top:0;}
+  .hero-wrap{
+    max-width:820px; margin:0 auto; text-align:center; position:relative; z-index:2;
+  }
+  .badge{
+    display:inline-block; font-size:0.85rem; color:var(--accent-c);
+    border:1px solid rgba(52,216,200,0.35); background:rgba(52,216,200,0.06);
+    padding:6px 16px; border-radius:999px; margin-bottom:28px;
+  }
+  .hero-wrap h1{
+    font-size:3.6rem; font-weight:700; line-height:1.12; margin-bottom:22px;
+  }
+  .hero-gradient{
+    background:linear-gradient(100deg, var(--accent-a), var(--accent-b) 60%, var(--accent-c));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-wrap p.lead{
+    color:var(--muted); font-size:1.15rem; max-width:560px; margin:0 auto 40px;
+  }
+  .cta-row{display:flex; gap:16px; justify-content:center; margin-bottom:64px; flex-wrap:wrap;}
+  .btn{
+    padding:15px 28px; border-radius:10px; font-weight:600; font-size:0.98rem;
+    display:inline-flex; align-items:center; gap:8px; transition:transform .15s ease, background .2s ease;
+    cursor:pointer;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--text); color:#0a0e1a;}
+  .btn-outline{border:1px solid var(--panel-border); color:var(--text);}
+  .stat-row{
+    display:flex; justify-content:center; gap:0; border:1px solid var(--panel-border);
+    background:rgba(16,24,44,0.6); border-radius:16px; overflow:hidden; max-width:560px; margin:0 auto;
+  }
+  .stat{flex:1; padding:22px 12px; text-align:center; border-right:1px solid var(--panel-border);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-size:1.5rem; font-weight:700; color:var(--accent-a); font-family:'Sora', sans-serif;}
+  .stat .label{font-size:0.82rem; color:var(--muted); margin-top:4px;}
+  .scroll-hint{
+    position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+    color:var(--muted); font-size:0.78rem; letter-spacing:0.16em;
+  }
+
+  .about-grid{display:grid; grid-template-columns:220px 1fr; gap:48px; align-items:start;}
+  .avatar-card{
+    width:200px; height:200px; border-radius:20px;
+    background:linear-gradient(150deg, rgba(79,141,255,0.18), rgba(139,107,255,0.1));
+    border:1px solid var(--panel-border);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Sora',sans-serif; font-size:3.2rem; font-weight:700;
+    color:var(--accent-a);
+    object-fit: cover;
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:var(--radius);
+    padding:32px;
+  }
+  .about-bio{margin-bottom:28px;}
+  .about-bio b{color:var(--text);}
+  .edu-row{
+    display:flex; justify-content:space-between; align-items:center;
+    background:rgba(255,255,255,0.03); border:1px solid var(--panel-border);
+    padding:16px 20px; border-radius:10px; margin-top:12px;
+  }
+  .edu-row .val{color:var(--accent-a); font-weight:700; font-family:'Sora',sans-serif;}
+
+  .tabs{display:flex; gap:12px; margin-bottom:36px; flex-wrap:wrap;}
+  .tab{
+    padding:11px 22px; border-radius:999px; font-size:0.92rem; font-weight:600;
+    border:1px solid var(--panel-border); color:var(--muted); cursor:pointer;
+    background:transparent; transition:all .2s ease;
+  }
+  .tab.active{background:var(--text); color:#0a0e1a; border-color:var(--text);}
+  .skill-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:16px;}
+  .skill-card{
+    display:flex; align-items:center; gap:14px;
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:12px; padding:18px 20px;
+    font-weight:600;
+  }
+  .skill-icon{
+    width:38px; height:38px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    background:rgba(79,141,255,0.12); font-size:1.15rem;
+  }
+  .skill-panel{display:none;}
+  .skill-panel.active{display:grid;}
+
+  .project-card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:18px; padding:36px;
+    margin-bottom:26px;
+  }
+  .project-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; flex-wrap:wrap; gap:14px;}
+  .project-icon{
+    width:52px; height:52px; border-radius:12px; background:rgba(139,107,255,0.14);
+    display:flex; align-items:center; justify-content:center; font-size:1.5rem;
+  }
+  .tag-pill{
+    font-size:0.78rem; font-weight:600; padding:6px 14px; border-radius:999px;
+    background:rgba(79,141,255,0.12); color:var(--accent-a); border:1px solid rgba(79,141,255,0.25);
+  }
+  .project-card h3{font-size:1.5rem; margin-bottom:4px;}
+  .project-card .stack-line{color:var(--accent-c); font-size:0.95rem; font-weight:600; margin-bottom:16px;}
+  .project-card p.desc{color:var(--muted); margin-bottom:22px;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+  .chip{
+    font-size:0.8rem; padding:6px 14px; border-radius:8px; border:1px solid var(--panel-border); color:var(--muted);
+  }
+  .link-row a{
+    font-size:0.9rem; font-weight:600; color:var(--accent-a); border-bottom:1px solid rgba(79,141,255,0.4);
+  }
+
+  .timeline{position:relative; margin-left:20px; padding-left:40px; border-left:1px solid var(--panel-border);}
+  .tl-item{position:relative; margin-bottom:44px;}
+  .tl-dot{
+    position:absolute; left:-49px; top:4px; width:14px; height:14px; border-radius:50%;
+    background:var(--accent-a); box-shadow:0 0 0 5px rgba(79,141,255,0.15);
+  }
+  .tl-date{font-size:0.8rem; font-weight:700; letter-spacing:0.05em; color:var(--accent-c); margin-bottom:8px;}
+  .tl-item h3{font-size:1.2rem; margin-bottom:2px;}
+  .tl-item .tl-org{color:var(--muted); font-weight:600; font-size:0.92rem; margin-bottom:10px;}
+  .tl-item p{color:var(--muted); max-width:560px;}
+  .tl-card{background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:26px 28px;}
+
+  .pathway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 12px; }
+  .pathway-card { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 14px; padding: 26px 28px; }
+  .pathway-card h3 { color: var(--accent-a); margin-bottom: 16px; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
+  .pathway-card ul { list-style: none; margin: 0; padding: 0; }
+  .pathway-card li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); font-size: 0.95rem; display: flex; align-items: flex-start; gap: 10px;}
+  .pathway-card li::before { content: "▹"; color: var(--accent-c); font-weight: bold; margin-top: -2px; }
+  .pathway-card li:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .cert-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px;}
+  .cert-card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:24px;
+    cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  .cert-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-a);
+    box-shadow: 0 8px 24px rgba(79, 141, 255, 0.15);
+  }
+  .cert-card .cert-org{font-size:0.8rem; color:var(--accent-c); font-weight:700; margin-bottom:10px;}
+  .cert-card h4{font-size:1.05rem; margin-bottom:8px;}
+  .cert-card p{color:var(--muted); font-size:0.9rem;}
+  .cert-hint {
+    margin-top: 14px;
+    font-size: 0.8rem;
+    color: var(--accent-a);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(6, 9, 18, 0.88);
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal.active { display: flex; }
+  .modal-container {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .modal-img, .modal-frame {
+    width: 100%;
+    height: 72vh;
+    border: none;
+    background: #000;
+  }
+  .modal-img {
+    object-fit: contain;
+  }
+  .modal-caption {
+    padding: 16px 24px;
+    width: 100%;
+    background: var(--bg-soft);
+    border-top: 1px solid var(--panel-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-caption h4 { font-size: 1.1rem; }
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 1.8rem;
+    color: var(--text);
+    cursor: pointer;
+    background: rgba(0,0,0,0.5);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    z-index: 10;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+
+  #contact .card{text-align:center; padding:60px 40px;}
+  #contact h2{font-size:2.2rem; margin-bottom:14px;}
+  #contact p{color:var(--muted); max-width:480px; margin:0 auto 32px;}
+  .contact-links{display:flex; justify-content:center; gap:16px; flex-wrap:wrap;}
+  footer{text-align:center; padding:30px; color:var(--muted); font-size:0.85rem; border-top:1px solid var(--panel-border);}
+
+  @media(max-width:720px){
+    .about-grid{grid-template-columns:1fr;}
+    .avatar-card{width:140px; height:140px; font-size:2.2rem;}
+    .hero-wrap h1{font-size:2.4rem;}
+    section{padding:100px 6vw 70px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">AM</div>
+  <nav>
+    <ul id="nav-list">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#journey">Journey</a></li>
+      <li><a href="#pathways">Coursework</a></li>
+      <li><a href="#certificates">Certificates</a></li>
+      <li><a href="#resume">Resume</a></li>
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <a href="#contact" class="connect-btn">Let's Connect ↗</a>
+  </div>
+</header>
+
+<section id="home">
+  <canvas class="net-bg" id="net-home"></canvas>
+  <div class="hero-wrap">
+    <div class="badge">Open to internships &amp; collaborations</div>
+    <h1>Hi, I'm Abhinav<br><span class="hero-gradient">a CSE Student.</span></h1>
+    <p class="lead">B.Tech Computer Science student at Lovely Professional University, building a foundation in programming, data structures, and problem-solving — one project at a time.</p>
+    <div class="cta-row">
+      <a href="#contact" class="btn btn-primary">Get In Touch →</a>
+      <a href="#skills" class="btn btn-outline">Explore Skills</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="num">6.73</div><div class="label">CGPA</div></div>
+      <div class="stat"><div class="num">4</div><div class="label">Active Projects</div></div>
+      <div class="stat"><div class="num">CSE</div><div class="label">@ LPU</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL DOWN ↓</div>
+</section>
+
+<section id="about">
+  <canvas class="net-bg" id="net-about"></canvas>
+  <div class="section-inner">
+    <div class="section-title">About Me</div>
+    <div class="section-sub">A quick look at who I am and where I'm headed.</div>
+    <div class="about-grid">
+      <!-- Profile image updated here -->
+      <img src="Abhinav image.jpeg" class="avatar-card" alt="Abhinav Mishra">
+      <div>
+        <div class="card about-bio">
+          I'm <b>Abhinav Mishra</b>, a B.Tech CSE student at <b>Lovely Professional University</b>. I'm currently building my foundations in programming, data structures, and web basics — learning by writing real code and shipping small projects rather than just reading about it. I'm especially drawn to problem-solving and want to grow into software development and, eventually, deeper work in AI and data.
+        </div>
+        <div class="card">
+          <h4 style="margin-bottom:18px;">🎓 Education</h4>
+          <div style="color:var(--muted); font-size:0.9rem; margin-bottom:4px;">2025 – 2029</div>
+          <h3>B.Tech Computer Science &amp; Engineering</h3>
+          <div style="color:var(--muted); margin-bottom:16px;">Lovely Professional University (LPU), Punjab</div>
+          <div class="edu-row"><span>Semester 1 TGPA</span><span class="val">6.42</span></div>
+          <div class="edu-row"><span>Semester 2 TGPA</span><span class="val">6.96</span></div>
+          <div class="edu-row"><span>Overall CGPA</span><span class="val">6.73</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <canvas class="net-bg" id="net-skills"></canvas>
+  <div class="section-inner">
+    <div class="section-title">My Skills</div>
+    <div class="section-sub">Technologies I'm learning and building with.</div>
+    <div class="tabs">
+      <div class="tab active" data-tab="prog">Programming</div>
+      <div class="tab" data-tab="tools">Tools &amp; Platforms</div>
+      <div class="tab" data-tab="core">Core CS</div>
+    </div>
+
+    <div class="skill-grid skill-panel active" data-panel="prog">
+      <div class="skill-card"><div class="skill-icon">🔧</div>C</div>
+      <div class="skill-card"><div class="skill-icon">🐍</div>Python</div>
+      <div class="skill-card"><div class="skill-icon">🌐</div>HTML/CSS</div>
+      <div class="skill-card"><div class="skill-icon">📜</div>JavaScript</div>
+    </div>
+
+    <div class="skill-grid skill-panel" data-panel="tools">
+      <div class="skill-card"><div class="skill-icon">🐙</div>Git &amp; GitHub</div>
+      <div class="skill-card"><div class="skill-icon">🖥️</div>VS Code</div>
+      <div class="skill-card"><div class="skill-icon">💻</div>Linux Basics</div>
+    </div>
+
+    <div class="skill-grid skill-panel" data-panel="core">
+      <div class="skill-card"><div class="skill-icon">🧩</div>Data Structures</div>
+      <div class="skill-card"><div class="skill-icon">🧠</div>Problem Solving</div>
+      <div class="skill-card"><div class="skill-icon">🔁</div>OOP Concepts</div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <canvas class="net-bg" id="net-projects"></canvas>
+  <div class="section-inner">
+    <div class="section-title">My Projects</div>
+    <div class="section-sub">Early work as I build my programming foundation.</div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🧮</div>
+        <span class="tag-pill">Python</span>
+      </div>
+      <h3>Python Data Structures</h3>
+      <div class="stack-line">Python</div>
+      <p class="desc">A collection of hands-on implementations of core data structures in Python — written to build intuition for how they work under the hood rather than just using built-in library calls.</p>
+      <div class="chip-row">
+        <div class="chip">Python</div>
+        <div class="chip">Data Structures</div>
+        <div class="chip">Algorithms</div>
+      </div>
+      <div class="link-row"><a href="https://github.com/AbhinavMishra7018/Python-DATA-STRUCTURE-" target="_blank" rel="noopener">View on GitHub →</a></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🌐</div>
+        <span class="tag-pill">Web</span>
+      </div>
+      <h3>HTML Practice Projects</h3>
+      <div class="stack-line">HTML &amp; CSS</div>
+      <p class="desc">A set of practice pages exploring HTML structure and CSS styling fundamentals — the starting point for moving into full front-end development.</p>
+      <div class="chip-row">
+        <div class="chip">HTML</div>
+        <div class="chip">CSS</div>
+      </div>
+      <div class="link-row"><a href="https://github.com/AbhinavMishra7018/html" target="_blank" rel="noopener">View on GitHub →</a></div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-top">
+        <div class="project-icon">🌉</div>
+        <span class="tag-pill">Group Project · Hardware</span>
+      </div>
+      <h3>Smart Bridge Monitoring System</h3>
+      <div class="stack-line">IoT · Sensors · Automated Access Control</div>
+      <p class="desc">Built as part of a group project to solve overcrowding on pedestrian bridges. The system tracks real-time headcount on the bridge and automatically closes access once a safe capacity limit is exceeded, reopening it once the count drops back within limits — reducing structural risk without needing a person to manually manage foot traffic.</p>
+      <div class="chip-row">
+        <div class="chip">Headcount Sensing</div>
+        <div class="chip">Automated Gate Control</div>
+        <div class="chip">Real-time Monitoring</div>
+        <div class="chip">Safety Systems</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <canvas class="net-bg" id="net-journey"></canvas>
+  <div class="section-inner">
+    <div class="section-title">My Journey</div>
+    <div class="section-sub">Key milestones so far.</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-date">2025 – PRESENT</div>
+          <h3>B.Tech CSE Student</h3>
+          <div class="tl-org">Lovely Professional University</div>
+          <p>Building a strong foundation in Computer Science &amp; Engineering — learning programming fundamentals, data structures, and OOP.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-date">SEM 1</div>
+          <h3>First Semester Complete</h3>
+          <div class="tl-org">TGPA: 6.42</div>
+          <p>Settled into college life and coursework while getting first exposure to core programming concepts.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-date">SEM 2</div>
+          <h3>Second Semester Complete</h3>
+          <div class="tl-org">TGPA: 6.96</div>
+          <p>Improved on semester 1 with a jump to 6.96 TGPA, bringing overall CGPA to 6.73.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-date">ONGOING</div>
+          <h3>Building on GitHub</h3>
+          <div class="tl-org">Python &amp; Web Practice</div>
+          <p>Started publishing practice work publicly, including Python data structure implementations and HTML/CSS exercises.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pathways">
+  <canvas class="net-bg" id="net-pathways"></canvas>
+  <div class="section-inner">
+    <div class="section-title">Career Pathways & Coursework</div>
+    <div class="section-sub">Key academic courses completing my foundation in computer science and engineering.</div>
+
+    <div class="pathway-grid">
+      <div class="pathway-card">
+        <h3>💻 Core Systems & Architecture</h3>
+        <ul>
+          <li>Data Structures and Algorithms</li>
+          <li>Design and Analysis of Algorithms</li>
+          <li>Database Management Systems</li>
+          <li>Operating Systems</li>
+          <li>Computer Networks</li>
+          <li>Computer Organization & Design</li>
+          <li>Software Engineering</li>
+        </ul>
+      </div>
+
+      <div class="pathway-card">
+        <h3>🚀 Software Development</h3>
+        <ul>
+          <li>Object Oriented Programming</li>
+          <li>Programming in Java</li>
+          <li>Python Programming</li>
+          <li>Computer Programming</li>
+          <li>Internet Programming Laboratory</li>
+          <li>Virtualization & Cloud Computing</li>
+        </ul>
+      </div>
+
+      <div class="pathway-card">
+        <h3>🧠 Mathematics & AI</h3>
+        <ul>
+          <li>Artificial Intelligence Essentials</li>
+          <li>Probability and Statistics</li>
+          <li>Discrete Mathematics</li>
+          <li>Differential Equations & Vector Calculus</li>
+          <li>Mathematics for Engineers</li>
+        </ul>
+      </div>
+
+      <div class="pathway-card">
+        <h3>🎯 Professional Skills</h3>
+        <ul>
+          <li>Industry Ethics and Legal Issues</li>
+          <li>Design Thinking</li>
+          <li>Community Development Project</li>
+          <li>Minor & Pathway Electives</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certificates">
+  <canvas class="net-bg" id="net-certs"></canvas>
+  <div class="section-inner">
+    <div class="section-title">Certificates</div>
+    <div class="section-sub">Click any certificate card to view the official credential image or document.</div>
+    <div class="cert-grid">
+      
+      <div class="cert-card" data-img="Cyber security certificate.pdf" data-title="Introduction to Cyber Security">
+        <div class="cert-org">INFOSYS SPRINGBOARD · MAR 26, 2026</div>
+        <h4>Introduction to Cyber Security</h4>
+        <p>Covered foundational cyber security concepts, common threats, safe computing practices, and basic defense mechanisms.</p>
+        <div class="cert-hint">🔍 Click to view certificate</div>
+      </div>
+
+      <div class="cert-card" data-img="Python certificate.pdf" data-title="Introduction to Python">
+        <div class="cert-org">INFOSYS SPRINGBOARD · FEB 2, 2026</div>
+        <h4>Introduction to Python</h4>
+        <p>Core Python programming fundamentals, syntax basics, control flow, and writing structured scripts.</p>
+        <div class="cert-hint">🔍 Click to view certificate</div>
+      </div>
+
+      <div class="cert-card" data-img="cyber_security_workshop_certificate.jpg.jpeg" data-title="Technical Workshop on Cyber Security">
+        <div class="cert-org">SKILL INDIA / ANSH INFOTECH · NOV 21, 2025</div>
+        <h4>Technical Workshop on Cyber Security</h4>
+        <p>Hands-on technical workshop on cyber security practical application held at Lovely Professional University.</p>
+        <div class="cert-hint">🔍 Click to view certificate</div>
+      </div>
+
+      <div class="cert-card" data-img="indian_laws_certificate.jpg.jpeg" data-title="Indian Laws: Know Your Rights">
+        <div class="cert-org">LEARN FOUNDATION ONLINE · OCT 25, 2025</div>
+        <h4>Indian Laws: Know Your Rights</h4>
+        <p>5+ hour online course covering citizen rights, family law, women and child protection, and criminal law basics.</p>
+        <div class="cert-hint">🔍 Click to view certificate</div>
+      </div>
+
+      <div class="cert-card" data-img="react_certificate.pdf.pdf" data-title="Learning Full Stack React">
+        <div class="cert-org">INFOSYS SPRINGBOARD · MAR 22, 2026</div>
+        <h4>Learning Full Stack React</h4>
+        <p>Course completion certificate for Full Stack React, covering front-end and back-end fundamentals for building web applications.</p>
+        <div class="cert-hint">🔍 Click to view certificate</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="cert-modal">
+  <div class="modal-container">
+    <div class="modal-close" id="modal-close">&times;</div>
+    <img src="" alt="Certificate" class="modal-img" id="modal-img" style="display:none;">
+    <iframe src="" class="modal-frame" id="modal-frame" style="display:none;"></iframe>
+    <div class="modal-caption">
+      <h4 id="modal-title">Certificate View</h4>
+      <a id="modal-download" href="#" target="_blank" style="color:var(--accent-a); font-weight:600; font-size:0.9rem;">Open Full File ↗</a>
+    </div>
+  </div>
+</div>
+
+<section id="resume">
+  <canvas class="net-bg" id="net-resume"></canvas>
+  <div class="section-inner">
+    <div class="section-title">Resume</div>
+    <div class="section-sub">A comprehensive overview of my professional experience, education, and skills.</div>
+    <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--panel-border);">
+      <!-- CV image updated here -->
+      <img src="CV.png" alt="Abhinav Mishra Resume" style="width: 100%; height: auto; display: block; border-radius: inherit;">
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <canvas class="net-bg" id="net-contact"></canvas>
+  <div class="section-inner">
+    <div class="card">
+      <h2>Let's Connect</h2>
+      <p>I'm open to internships, collaborations, and just talking tech. Reach out through any of the links below.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="mailto:abhinavmishra0007up@gmail.com">Email Me</a>
+        <a class="btn btn-outline" href="https://github.com/AbhinavMishra7018" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-outline" href="https://www.linkedin.com/in/abhinav-mishra-73b74437a/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Abhinav Mishra. Built with HTML, CSS &amp; JavaScript.</footer>
+
+<script>
+  const certModal = document.getElementById('cert-modal');
+  const modalImg = document.getElementById('modal-img');
+  const modalFrame = document.getElementById('modal-frame');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDownload = document.getElementById('modal-download');
+  const modalClose = document.getElementById('modal-close');
+
+  document.querySelectorAll('.cert-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const src = card.dataset.img;
+      const title = card.dataset.title;
+      if (src) {
+        modalTitle.textContent = title;
+        modalDownload.href = src;
+        
+        if (src.toLowerCase().endsWith('.pdf')) {
+          modalImg.style.display = 'none';
+          modalFrame.style.display = 'block';
+          modalFrame.src = src;
+        } else {
+          modalFrame.style.display = 'none';
+          modalImg.style.display = 'block';
+          modalImg.src = src;
+        }
+        
+        certModal.classList.add('active');
+      }
+    });
+  });
+
+  function closeModal() {
+    certModal.classList.remove('active');
+    modalImg.src = '';
+    modalFrame.src = '';
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  certModal.addEventListener('click', (e) => {
+    if (e.target === certModal) closeModal();
+  });
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('#nav-list a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 140;
+      if (window.scrollY >= top) current = sec.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.skill-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`.skill-panel[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+    });
+  });
+
+  function initNet(canvas) {
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr;
+    let points = [];
+    const NUM_POINTS = 46;
+
+    function resize() {
+      dpr = window.devicePixelRatio || 1;
+      w = canvas.offsetWidth;
+      h = canvas.offsetHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makePoints() {
+      points = [];
+      for (let i = 0; i < NUM_POINTS; i++) {
+        points.push({
+          x: Math.random() * w,
+          y: Math.random() * h * 0.85 + h * 0.1,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.1,
+          r: Math.random() * 1.6 + 1
+        });
+      }
+    }
+
+    function drawWaveGrid(t) {
+      const rows = 10, cols = 22;
+      ctx.strokeStyle = 'rgba(120,150,220,0.14)';
+      ctx.lineWidth = 1;
+      const gridTop = h * 0.15, gridBottom = h * 0.62;
+      for (let r = 0; r <= rows; r++) {
+        ctx.beginPath();
+        for (let c = 0; c <= cols; c++) {
+          const x = (c / cols) * w;
+          const baseY = gridTop + (r / rows) * (gridBottom - gridTop);
+          const wave = Math.sin((c / cols) * Math.PI * 2 + t * 0.6 + r * 0.4) * 10 * (r / rows);
+          const y = baseY + wave;
+          c === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      for (let c = 0; c <= cols; c++) {
+        ctx.beginPath();
+        for (let r = 0; r <= rows; r++) {
+          const x = (c / cols) * w;
+          const baseY = gridTop + (r / rows) * (gridBottom - gridTop);
+          const wave = Math.sin((c / cols) * Math.PI * 2 + t * 0.6 + r * 0.4) * 10 * (r / rows);
+          const y = baseY + wave;
+          r === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+
+    function drawPoints() {
+      for (let p of points) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+      }
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const dx = points[i].x - points[j].x;
+          const dy = points[i].y - points[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.strokeStyle = `rgba(120,150,220,${0.12 * (1 - dist / 140)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[j].x, points[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      for (let p of points) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(150,180,255,0.85)';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    let start = performance.now();
+    function frame(now) {
+      const t = (now - start) / 1000;
+      ctx.clearRect(0, 0, w, h);
+      drawWaveGrid(t);
+      drawPoints();
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    makePoints();
+    requestAnimationFrame(frame);
+    window.addEventListener('resize', () => { resize(); makePoints(); });
+  }
+
+  document.querySelectorAll('canvas.net-bg').forEach(initNet);
+</script>
+
+</body>
+</html>
